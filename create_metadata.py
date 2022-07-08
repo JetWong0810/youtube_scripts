@@ -5,6 +5,7 @@ import datetime
 import spacy
 import re
 import enchant
+import os
 
 pymysql.install_as_MySQLdb()
 
@@ -19,7 +20,7 @@ sw_spacy = en.Defaults.stop_words
 
 mp3_id = sys.argv[1]
 mp4_id = sys.argv[2]
-folder_index = sys.argv[3]
+folder_index = f"{mp4_id}_{mp3_id}"
 
 metadata_dict = {}
 title = ''
@@ -46,7 +47,7 @@ for r in cur:
         if len(r[1]) == 0:
             title = f"{title} | For Relax And Enjoy Yourself"
         else:
-            title = f"{title} - {r[1]}"     
+            title = f"{title} - {r[1]}"
     except Exception:
         title = f"{title} | For Relax And Enjoy Yourself"
 
@@ -63,13 +64,17 @@ for word in words:
     if d.check(word):
         significant_words.append(word)
 
-description = f"{title}\n\n- Help us 1000 subscribes : https://www.youtube.com/channel/UCcDibumKywWD0eLSnKD8Zeg\nThanks for watching\n\nhealing music,soft guitar,relaxing guitar music,calming music,relaxing music,sleep music,calm music,healing music,study music,stress relief music,sleeping music,soothing music,peaceful music,sleep meditation,soft music,binaural beats,music for sleep,relaxing sleep music,deep sleep music,SoundCloud,SoundCloud music,calming music SoundCloud,relaxing music SoundCloud,sleep music SoundCloud,calm music SoundCloud,healing music SoundCloud,study music SoundCloud,pexels,pexels video,beautiful melody\n\nPlease follow and subscribe to our channel if you want more Relax Music. Don't forget to share our channel with your friends.\n\nThanks Fan so much for watching, sharing, commenting and Like !!!\nHave a nice day, we'll be back before you know!\n\nFollow SoundCloud Music: \nSubcribe: https://www.youtube.com/channel/UCcDibumKywWD0eLSnKD8Zeg\n\n{significant_words}" 
+description = f"{title}\n- Help us 1000 subscribes : https://www.youtube.com/channel/UCcDibumKywWD0eLSnKD8Zeg\nThanks for watching\nhealing music,soft guitar,relaxing guitar music,calming music,relaxing music,sleep music,calm music,healing music,study music,stress relief music,sleeping music,soothing music,peaceful music,sleep meditation,soft music,binaural beats,music for sleep,relaxing sleep music,deep sleep music,SoundCloud,SoundCloud music,calming music SoundCloud,relaxing music SoundCloud,sleep music SoundCloud,calm music SoundCloud,healing music SoundCloud,study music SoundCloud,pexels,pexels video,beautiful melody\nPlease follow and subscribe to our channel if you want more Relax Music. Don't forget to share our channel with your friends.\nThanks Fan so much for watching, sharing, commenting and Like !!!\nHave a nice day, we'll be back before you know!\nFollow SoundCloud Music: \nSubcribe: https://www.youtube.com/channel/UCcDibumKywWD0eLSnKD8Zeg\n{significant_words}"
 
-meta_dict = {'title': title, 'tags': significant_words, 'description': description}
+meta_dict = {
+    'title': title,
+    'tags': significant_words,
+    'description': description
+}
 
 today = datetime.date.today()
-meta_file_path = '/data/upload/%s/%s/metadata.json' % (
-    today, folder_index)
+upload_dir = os.getenv('YOUTUBE_FILE_PATH') + '/upload'
+meta_file_path = '%s/%s/%s/metadata.json' % (upload_dir, today, folder_index)
 with open(meta_file_path, "w") as f:
     json.dump(meta_dict, f)
 

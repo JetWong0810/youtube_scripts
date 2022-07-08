@@ -1,5 +1,3 @@
-from fileinput import filename
-from venv import create
 import requests
 import json
 import pymysql
@@ -31,8 +29,8 @@ proxies = {}
 duration_map = ['short', 'medium', 'long', 'epic']
 
 keyword = 'piano'
-license = 'to_use_commercially'
-duration = duration_map[2]
+license = 'to_use_commercially'  #无版权
+duration = duration_map[2] #10到30min
 offset = 0
 
 cur.execute(
@@ -69,7 +67,7 @@ for mp3 in mp3_list['collection']:
         "INSERT INTO mp3_info(audio_id, user_id, filename, title, url, duration, genre, kind, license, likes_count, tags) VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')"
         % insert_item)
 
-    print(f"{mp3['id']}下载成功")
+    print(f"{mp3['id']}抓取信息成功")
 
 insert_search_params = (keyword, license, duration, '', offset)
 cur.execute(
