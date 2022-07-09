@@ -64,7 +64,7 @@ for word in words:
     if d.check(word):
         significant_words.append(word)
 
-description = f"{significant_words}"
+description = f"{','.join(significant_words)}"
 
 meta_dict = {
     'title': title,
